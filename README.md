@@ -1,97 +1,199 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# HealthBridge - AI-Powered Health Companion
 
-# Getting Started
+A React Native health application that integrates with Google Health Connect to provide personalized health insights and recommendations powered by AI.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Features
 
-## Step 1: Start Metro
+### 🏠 Dashboard
+- **Health Score**: Overall health assessment based on multiple metrics
+- **Quick Stats**: Daily overview of steps, heart rate, calories, and sleep
+- **Goals Progress**: Visual progress tracking for health goals
+- **Recent Insights**: Latest AI-generated recommendations
+- **Quick Actions**: Easy navigation to detailed metrics and insights
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+### 📊 Metrics
+- **Time Range Selection**: View data for 24 hours, 7 days, or 30 days
+- **Summary Cards**: Key health metrics at a glance
+- **Detailed Records**: Comprehensive view of all health data
+- **Health Insights**: Analysis of your health patterns
+- **Pull-to-Refresh**: Easy data synchronization
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+### 💡 AI Insights
+- **Personalized Recommendations**: AI-generated health advice
+- **Health Score**: Overall wellness assessment
+- **Trend Analysis**: Track changes in health metrics over time
+- **Predictions**: AI-powered health forecasting
+- **Action Items**: Specific steps to improve health
 
-```sh
-# Using npm
-npm start
+### 👤 Profile & Settings
+- **Health Connect Management**: Permission and sync settings
+- **App Preferences**: Notifications, dark mode, language
+- **Data Management**: Export, clear cache, delete data
+- **Support & About**: Help, privacy policy, terms of service
 
-# OR using Yarn
-yarn start
-```
+## Technical Stack
 
-## Step 2: Build and run your app
+- **React Native**: Cross-platform mobile development
+- **NativeWind**: Utility-first CSS framework for styling
+- **React Navigation**: Tab-based navigation
+- **Google Health Connect**: Health data integration
+- **AI Backend**: Large Language Model for health recommendations
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## Health Data Integration
 
-### Android
+The app integrates with Google Health Connect to read the following health metrics:
 
-```sh
-# Using npm
+- **Activity**: Steps, active calories burned, exercise sessions
+- **Vital Signs**: Heart rate, blood pressure, respiratory rate
+- **Body Measurements**: Weight, height, body fat, body temperature
+- **Sleep**: Sleep sessions and quality metrics
+- **Other**: Oxygen saturation, VO2 max, blood glucose
+
+## AI-Powered Features
+
+### Health Analysis
+- Real-time health data processing
+- Personalized recommendations based on individual metrics
+- Trend analysis and pattern recognition
+- Predictive health insights
+
+### Recommendations Engine
+- Activity optimization suggestions
+- Sleep quality improvements
+- Heart rate monitoring advice
+- Weight management guidance
+- General wellness tips
+
+## Installation & Setup
+
+### Prerequisites
+- Node.js (v18 or higher)
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development)
+- Google Health Connect app installed on device
+
+### Installation Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd HealthBridgeApp
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Install iOS dependencies** (iOS only)
+   ```bash
+   cd ios && pod install && cd ..
+   ```
+
+4. **Configure Health Connect**
+   - Ensure Google Health Connect is installed on your device
+   - Grant necessary permissions when prompted
+
+5. **Run the application**
+   ```bash
+   # For Android
 npm run android
 
-# OR using Yarn
-yarn android
+   # For iOS
+   npm run ios
+   ```
+
+## Configuration
+
+### Backend Integration
+Update the AI service configuration in `src/services/aiService.js`:
+
+```javascript
+this.baseURL = 'https://your-backend-url.com/api';
+// Add your API key
+'Authorization': 'Bearer your-api-key'
 ```
 
-### iOS
+### Health Connect Permissions
+The app requests permissions for all supported health data types. Users can manage these permissions through the Google Health Connect app.
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## Project Structure
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+```
+src/
+├── components/          # Reusable UI components
+│   ├── HealthCard.js
+│   ├── RecommendationCard.js
+│   └── ProgressBar.js
+├── navigation/          # Navigation configuration
+│   └── AppNavigator.js
+├── screens/            # Main application screens
+│   ├── DashboardScreen.js
+│   ├── MetricsScreen.js
+│   ├── RecommendationsScreen.js
+│   └── ProfileScreen.js
+├── services/           # Business logic and API calls
+│   ├── healthService.js
+│   └── aiService.js
+└── utils/              # Utility functions
 ```
 
-Then, and every time you update your native dependencies, run:
+## Key Components
 
-```sh
-bundle exec pod install
-```
+### HealthCard
+Displays individual health metrics with icons, values, and trends.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+### RecommendationCard
+Shows AI-generated health recommendations with priority levels and suggestions.
 
-```sh
-# Using npm
-npm run ios
+### ProgressBar
+Visual progress tracking for health goals and achievements.
 
-# OR using Yarn
-yarn ios
-```
+## Styling
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+The application uses NativeWind (Tailwind CSS for React Native) for consistent, responsive styling:
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+- **Utility-first approach**: Rapid UI development
+- **Responsive design**: Adapts to different screen sizes
+- **Consistent theming**: Unified color scheme and spacing
+- **Modern UI**: Clean, intuitive interface
 
-## Step 3: Modify your app
+## Health Data Privacy
 
-Now that you have successfully run the app, let's make changes!
+- **Local Processing**: Health data is processed locally when possible
+- **Secure Transmission**: Data sent to backend is encrypted
+- **User Control**: Users can export or delete their data
+- **Minimal Data**: Only necessary data is transmitted for AI analysis
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+## Future Enhancements
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+- **Real-time Monitoring**: Continuous health data monitoring
+- **Advanced Analytics**: More sophisticated health pattern analysis
+- **Integration**: Connect with fitness apps and wearables
+- **Social Features**: Share achievements and compete with friends
+- **Custom Goals**: Personalized health goal setting
+- **Notifications**: Smart health reminders and alerts
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+## Contributing
 
-## Congratulations! :tada:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-You've successfully run and modified your React Native App. :partying_face:
+## License
 
-### Now what?
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+## Support
 
-# Troubleshooting
+For support and questions:
+- Create an issue in the repository
+- Contact the development team
+- Check the documentation
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+---
 
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+**HealthBridge** - Your AI-powered health companion for a better, healthier life.
