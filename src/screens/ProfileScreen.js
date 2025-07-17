@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import healthService from '../services/healthService';
+import { AuthContext } from '../services/AuthContext';
 
 const ProfileScreen = () => {
   const [notifications, setNotifications] = useState(true);
   const [dataSharing, setDataSharing] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [healthConnectStatus, setHealthConnectStatus] = useState('connected');
+  const { logout } = useContext(AuthContext);
 
   const handleDisconnectHealthConnect = async () => {
     try {
@@ -286,6 +288,12 @@ const ProfileScreen = () => {
           </View>
         </View>
       </ScrollView>
+
+      <TouchableOpacity
+        onPress={logout}
+        className="bg-red-500 rounded-lg py-3 px-8 items-center m-6">
+      <Text className="text-white font-bold text-base">Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 };
