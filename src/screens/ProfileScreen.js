@@ -8,7 +8,28 @@ const ProfileScreen = () => {
   const [dataSharing, setDataSharing] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [healthConnectStatus, setHealthConnectStatus] = useState('connected');
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext);
+
+  // Format the member since date
+  const getMemberSinceText = () => {
+    if (!user || !user.metadata || !user.metadata.creationTime) {
+      return 'Member since recently';
+    }
+    
+    const creationDate = new Date(user.metadata.creationTime);
+    const options = { year: 'numeric', month: 'long' };
+    return `Member since ${creationDate.toLocaleDateString('en-US', options)}`;
+  };
+
+  // Get user display name or fallback
+  const getUserDisplayName = () => {
+    return user?.displayName || user?.email?.split('@')[0] || 'User';
+  };
+
+  // Get user email
+  const getUserEmail = () => {
+    return user?.email || 'No email available';
+  };
 
   const handleDisconnectHealthConnect = async () => {
     try {
@@ -83,9 +104,9 @@ const ProfileScreen = () => {
               <Text className="text-2xl">👤</Text>
             </View>
             <View className="flex-1">
-              <Text className="text-lg font-medium text-gray-800">John Doe</Text>
-              <Text className="text-sm text-gray-600">john.doe@example.com</Text>
-              <Text className="text-xs text-gray-500">Member since January 2024</Text>
+              <Text className="text-lg font-medium text-gray-800">{getUserDisplayName()}</Text>
+              <Text className="text-sm text-gray-600">{getUserEmail()}</Text>
+              <Text className="text-xs text-gray-500">{getMemberSinceText()}</Text>
             </View>
           </View>
           <TouchableOpacity className="bg-indigo-50 p-3 rounded-lg border border-indigo-200">

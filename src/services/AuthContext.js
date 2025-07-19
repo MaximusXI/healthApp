@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 
 // Firebase config - you'll need to replace this with your actual config
 const firebaseConfig = {
@@ -49,8 +49,23 @@ export const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  const updateUserProfile = async (displayName) => {
+    if (auth.currentUser) {
+      return updateProfile(auth.currentUser, { displayName });
+    }
+    throw new Error('No user is currently signed in');
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, createUserWithEmailAndPassword: registerWithEmail }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      login, 
+      signup, 
+      logout, 
+      createUserWithEmailAndPassword: registerWithEmail,
+      updateUserProfile 
+    }}>
       {children}
     </AuthContext.Provider>
   );

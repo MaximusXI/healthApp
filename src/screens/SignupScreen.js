@@ -18,7 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 const SignupScreen = () => {
   const navigation = useNavigation();
   const [fullName, setFullName] = useState("");
-  const { createUserWithEmailAndPassword } = useContext(AuthContext);
+  const { createUserWithEmailAndPassword, updateUserProfile } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,6 +32,8 @@ const SignupScreen = () => {
     setLoading(true);
     try {
       await createUserWithEmailAndPassword(email, password);
+      // Update the user's display name with their full name
+      await updateUserProfile(fullName);
       Alert.alert("Success", "Account created successfully!");
       navigation.navigate("Login");
     } catch (error) {
