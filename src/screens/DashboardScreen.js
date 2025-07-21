@@ -4,6 +4,7 @@ import HealthCard from '../components/HealthCard';
 import ProgressBar from '../components/ProgressBar';
 import healthService from '../services/healthService';
 import aiService from '../services/aiService';
+import healthSync from '../services/healthSync';
 
 const DashboardScreen = ({ navigation }) => {
   const [healthData, setHealthData] = useState({});
@@ -13,6 +14,8 @@ const DashboardScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [permissionsGranted, setPermissionsGranted] = useState(false);
   const [healthConnectAvailable, setHealthConnectAvailable] = useState(true);
+
+  healthSync();
 
   useEffect(() => {
     initializeHealthConnect();
@@ -61,9 +64,12 @@ const DashboardScreen = ({ navigation }) => {
     try {
       const data = await healthService.fetchHealthData('24h');
       setHealthData(data);
-      
+      console.log('HealthData is:');
+      console.log(data);
       const aggregated = healthService.getAggregatedData(data);
       setAggregatedData(aggregated);
+      console.log('The aggregated health data is:');
+      console.log(aggregated);
       
       // Get AI recommendations
       const aiRecommendations = await aiService.sendHealthDataToBackend(data, aggregated);
