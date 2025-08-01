@@ -216,7 +216,7 @@ const DashboardScreen = ({ navigation }) => {
                 unit="kcal"
                 icon="🔥"
                 color="orange"
-                subtitle="Active calories burned"
+                subtitle="Total calories burned"
               />
             </View>
             <View className="w-[48%] mb-3">

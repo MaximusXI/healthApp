@@ -243,13 +243,14 @@ class HealthService {
     }
 
     // Calories
-    if (healthData.ActiveCaloriesBurned) {
-      const totalCalories = healthData.ActiveCaloriesBurned.reduce(
+    if (healthData.TotalCaloriesBurned) {
+      const totalCalories = healthData.TotalCaloriesBurned.reduce(
         (sum, record) => sum + (record.energy?.inKilocalories || 0), 0
       );
       aggregated.calories = {
         total: Math.round(totalCalories),
-        latest: this.getLatestValue(healthData.ActiveCaloriesBurned, record => record.energy?.inKilocalories)
+        latest: this.getLatestValue(healthData.TotalCaloriesBurned, record => record.energy?.inKilocalories),
+        average: Math.round(totalCalories / healthData.TotalCaloriesBurned.length)
       };
     }
 
