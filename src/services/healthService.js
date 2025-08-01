@@ -225,7 +225,7 @@ class HealthService {
     if (healthData.Distance) {
       const totalDistance = healthData.Distance.reduce((sum, record) => sum + record.distance?.inMeters, 0);
       aggregated.distance = {
-        total: totalDistance,
+        total: Number(totalDistance.toFixed(2)),
         latest: this.getLatestValue(healthData.Distance, record => record.distance?.inMeters),
         average: Math.round(totalDistance / healthData.Distance.length)
       };
