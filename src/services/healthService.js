@@ -6,20 +6,41 @@ import {
 
 export const RECORD_TYPES = [
   'ActiveCaloriesBurned',
+  // 'BasalBodyTemperature',
+  // 'BasalMetabolicRate',
+  // 'BoneMass',
+  // 'CervicalMucus',
+  // 'CyclingPedalingCadence',  
+  'Distance',
+  // 'ElevationGained',
+  // 'FloorsClimbed',
   'Steps',
   'HeartRate',
   'BloodPressure',
-  'SleepSession',
   'Weight',
   'Height',
+  'Hydration',
   'BodyTemperature',
-  'OxygenSaturation',
-  'BasalBodyTemperature',
-  'ExerciseSession',
+  // 'BasalBodyTemperature',
+  // 'ExerciseSession',
   'RespiratoryRate',
   'Vo2Max',
-  'BodyFat',
+  // 'BodyFat',
   'BloodGlucose',
+  // 'LeanBodyMass',
+  // 'MenstruationFlow',
+  // 'MenstruationPeriod',
+  // 'Nutrition',
+  // 'OvulationTest',
+  'OxygenSaturation',
+  // 'Power',
+  'RestingHeartRate',
+  // 'SexualActivity',
+  'SleepSession',
+  // 'Speed',
+  // 'StepsCadence',
+  'TotalCaloriesBurned',
+  // 'WheelchairPushes'
 ];
 
 class HealthService {
@@ -200,6 +221,16 @@ class HealthService {
       };
     }
 
+    //distance
+    if (healthData.Distance) {
+      const totalDistance = healthData.Distance.reduce((sum, record) => sum + record.distance?.inMeters, 0);
+      aggregated.distance = {
+        total: totalDistance,
+        latest: this.getLatestValue(healthData.Distance, record => record.distance?.inMeters),
+        average: Math.round(totalDistance / healthData.Distance.length)
+      };
+    }
+
     // Heart Rate
     if (healthData.HeartRate) {
       const heartRates = healthData.HeartRate.map(record => record.samples[0]?.beatsPerMinute);
@@ -233,6 +264,24 @@ class HealthService {
     // Sleep
     if (healthData.SleepSession) {
       aggregated.sleep = this.calculateSleepMetrics(healthData.SleepSession);
+    }
+
+    //water
+    if (healthData.Hydration) {
+      const totalWater = healthData.Hydration.reduce((sum, record) => sum + record.volume?.inMilliliters, 0);
+      aggregated.water = {
+        latest: this.getLatestValue(healthData.Hydration, record => record.volume?.inMilliliters),
+        average: Math.round(totalWater / healthData.Hydration.length)
+      };
+    }
+
+    //Blood Pressure
+    if (healthData.BloodPressure) {
+      const totalBloodPressure = healthData.BloodPressure.reduce((sum, record) => sum + record.systolic?.inMillimetersOfMercury, 0);
+      aggregated.bloodPressure = {
+        latest: this.getLatestValue(healthData.BloodPressure, record => record.systolic?.inMillimetersOfMercury),
+        average: Math.round(totalBloodPressure / healthData.BloodPressure.length)
+      };
     }
 
     return aggregated;

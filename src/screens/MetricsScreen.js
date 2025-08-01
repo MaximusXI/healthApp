@@ -20,6 +20,7 @@ const MetricsScreen = () => {
     try {
       const data = await healthService.fetchHealthData(selectedPeriod);
       setHealthData(data);
+      console.log('Collected health data in metrics screen', data);
       
       const aggregated = healthService.getAggregatedData(data);
       setAggregatedData(aggregated);
@@ -102,10 +103,10 @@ const MetricsScreen = () => {
               <HealthCard
                 title="Distance"
                 value={aggregatedData.distance?.total || 0}
-                unit="km"
+                unit="meters"
                 icon="🚶"
                 color="blue"
-                subtitle={`Avg: ${aggregatedData.distance?.average || 0}km/day`}
+                subtitle={`Avg: ${aggregatedData.distance?.average || 0}m/day`}
               />
             </View>
             <View className="w-[48%] mb-3">
@@ -223,7 +224,7 @@ const MetricsScreen = () => {
             <View className="w-[48%] mb-3">
               <HealthCard
                 title="Water Intake"
-                value={aggregatedData.water?.total || 0}
+                value={aggregatedData.water?.average || 0}
                 unit="ml"
                 icon="💧"
                 color="blue"
