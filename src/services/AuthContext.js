@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect,useMemo } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 
@@ -18,11 +18,14 @@ export const AuthContext = createContext({
   login: async () => {},
   signup: async () => {},
   logout: async () => {},
+  fitbitConnected: false,
+  setFitbitConnected: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fitbitConnected, setFitbitConnected] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (usr) => {
@@ -46,6 +49,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    setFitbitConnected(false);
     return signOut(auth);
   };
 
@@ -56,16 +60,20 @@ export const AuthProvider = ({ children }) => {
     throw new Error('No user is currently signed in');
   };
 
+  const value = useMemo(() => ({
+    user,
+    loading,
+    login,
+    signup,
+    logout,
+    createUserWithEmailAndPassword: registerWithEmail,
+    updateUserProfile,
+    fitbitConnected,
+    setFitbitConnected,
+  }), [user, loading, fitbitConnected]);
+
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      login, 
-      signup, 
-      logout, 
-      createUserWithEmailAndPassword: registerWithEmail,
-      updateUserProfile 
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

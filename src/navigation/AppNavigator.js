@@ -10,6 +10,7 @@ import RecommendationsScreen from '../screens/RecommendationsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
+import FitbitScreen from '../screens/FitbitScreen';
 import { AuthContext } from '../services/AuthContext';
 
 const Tab = createBottomTabNavigator();
@@ -57,11 +58,27 @@ const SignOutStack = () => (
   </Stack.Navigator>
 );
 
+// After login: show FitbitScreen first if not connected; else show tabs
+const AuthedFlow = () => {
+  const { fitbitConnected } = useContext(AuthContext);
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!fitbitConnected ? (
+        <Stack.Screen name="Fitbit" component={FitbitScreen} />
+      ) : (
+        <Stack.Screen name="Tabs" component={SignInStack} />
+      )}
+    </Stack.Navigator>
+  );
+};
+
 const AppNavigator = () => {
-  const { user } = useContext(AuthContext); // user is null if not signed in
+  const { user, loading } = useContext(AuthContext); // user is null if not signed in
+  // Optional splash/loader while Firebase resolves auth state
+  if (loading) return null;
   return (
     <NavigationContainer>
-      {user ? <SignInStack /> : <SignOutStack />}
+      {user ? <AuthedFlow /> : <SignOutStack />}
     </NavigationContainer>
   );
 };

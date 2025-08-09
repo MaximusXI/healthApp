@@ -5,6 +5,7 @@ import ProgressBar from '../components/ProgressBar';
 import healthService from '../services/healthService';
 import aiService from '../services/aiService';
 import healthSync from '../services/healthSync';
+import { apiFetch, fetchFitbitData, ensureAccessToken } from '../utils/fitbitUtil';
 
 const DashboardScreen = ({ navigation }) => {
   const [healthData, setHealthData] = useState({});
@@ -70,6 +71,11 @@ const DashboardScreen = ({ navigation }) => {
       setAggregatedData(aggregated);
       console.log('The aggregated health data is:');
       console.log(aggregated);
+
+      //Fitbit Data
+      const metrics = await fetchFitbitData();
+      console.log('The data fetched fromr the fitbit is:');
+      console.log(metrics);
       
       // Get AI recommendations
       const aiRecommendations = await aiService.sendHealthDataToBackend(data, aggregated);

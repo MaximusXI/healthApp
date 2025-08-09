@@ -8,18 +8,12 @@ import {
   Platform,
   StatusBar,
   ActivityIndicator,
-  Alert,ScrollView
+  Alert,
 } from 'react-native';
 import { AuthContext } from '../services/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { Mail } from 'lucide-react-native';
 import PasswordInput from '../utils/PasswordInput';
-import { fitbitAuthConfig } from '../utils/authConfig';
-import { authorize } from 'react-native-app-auth';
-import { fetchFitbitData } from '../utils/fitbit';
-import { revoke } from 'react-native-app-auth';
-
-
 
 const LoginScreen = () => {
   const { login } = useContext(AuthContext);
@@ -28,7 +22,6 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [data, setData] = useState(null);
 
   const handleLogin = async () => {
     setError('');
@@ -39,50 +32,11 @@ const LoginScreen = () => {
 
     setLoading(true);
     try {
-      const result = await authorize({
-        ...fitbitAuthConfig,
-        additionalParameters: {
-          prompt: 'login' // Force login every time
-        }
-      });
-      console.log('Access Token:', result.accessToken);
-      console.log('Refresh Token:', result.refreshToken);
-      console.log('Token Type:', result.tokenType);
-      console.log('Expires At:', result.expiresAt);
-      console.log('Scope:', result.scope);
-      console.log('State:', result.state);
-      console.log('Id Token:', result.idToken);
-      console.log('Authorization Code:', result.authorizationCode);
-
-      if (result?.accessToken) {
-        const metrics = await fetchFitbitData(result.accessToken);
-        console.log('Fitbit Data:', metrics);
-        setData(metrics);
-      }
-      // await revoke(fitbitAuthConfig, {
-      //   tokenToRevoke: result.accessToken,
-      //   sendClientId: true,
-      // });
+      await login(email, password);
     } catch (e) {
       setError(e.message || 'Login failed');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      if (data?.accessToken) {
-        await revoke(fitbitAuthConfig, {
-          tokenToRevoke: data.accessToken,
-          sendClientId: true
-        });
-      }
-      setData(null);
-      Alert.alert('Logged Out', 'You have been logged out from Fitbit.');
-    } catch (e) {
-      console.error('Logout error:', e);
-      Alert.alert('Error', 'Failed to logout');
     }
   };
 
@@ -142,36 +96,6 @@ const LoginScreen = () => {
               Sign Up now
             </Text>
           </Text>
-          {data && (
-  <ScrollView className="mt-6 max-h-[300px] bg-gray-100 p-4 rounded-lg">
-    <Text className="text-gray-800 font-semibold mb-2">Profile:</Text>
-    <Text className="text-xs text-gray-700 mb-2">
-      {JSON.stringify(data.profile, null, 2)}
-    </Text>
-
-    <Text className="text-gray-800 font-semibold mb-2">Steps:</Text>
-    <Text className="text-xs text-gray-700 mb-2">
-      {JSON.stringify(data.steps, null, 2)}
-    </Text>
-
-    <Text className="text-gray-800 font-semibold mb-2">Heart:</Text>
-    <Text className="text-xs text-gray-700 mb-2">
-      {JSON.stringify(data.heart, null, 2)}
-    </Text>
-
-    <Text className="text-gray-800 font-semibold mb-2">Sleep (minutes asleep):</Text>
-    <Text className="text-xs text-gray-700">
-      {JSON.stringify(data.sleep, null, 2)}
-    </Text>
-  </ScrollView>
-  
-)}
-<TouchableOpacity
-  onPress={handleLogout}
-  className="bg-red-600 rounded-lg py-3 px-8 mt-4 w-full items-center"
->
-  <Text className="text-white font-bold text-base">Logout from Fitbit</Text>
-</TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
