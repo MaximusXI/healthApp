@@ -6,6 +6,7 @@ import healthService from '../services/healthService';
 import aiService from '../services/aiService';
 import healthSync from '../services/healthSync';
 import { apiFetch, fetchFitbitData, ensureAccessToken } from '../utils/fitbitUtil';
+import { getSkinTemperatureC, getBreathingRate, getSpO2Percent } from '../utils/helpers';
 
 const DashboardScreen = ({ navigation }) => {
   const [healthData, setHealthData] = useState({});
@@ -99,39 +100,10 @@ const DashboardScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
-  // ---- Fitbit value extractors (safe, with fallbacks) ----
-  const getSkinTemperatureC = () => {
-    const st = fitbitMetrics?.skin_temperature;
-    // Try several likely shapes; default to null if not present
-    return (
-      st?.tempSkin?.[0]?.value ??
-      st?.['tempSkin']?.[0]?.value ??
-      st?.value ??
-      st?.[0]?.value ?? null
-    );
-  };
-
-  const getBreathingRate = () => {
-    const br = fitbitMetrics?.breathing_rate;
-    return (
-      br?.br?.[0]?.value?.breathingRate ??
-      br?.['br']?.[0]?.value?.breathingRate ??
-      br?.value?.breathingRate ??
-      br?.value ??
-      br?.[0]?.value?.breathingRate ?? null
-    );
-  };
-
-  const getSpO2Percent = () => {
-    const spo2 = fitbitMetrics?.oxygen_saturation;
-    return (
-      spo2?.spo2?.[0]?.value?.avg ??
-      spo2?.['spo2']?.[0]?.value?.avg ??
-      spo2?.value?.avg ??
-      spo2?.value ??
-      spo2?.[0]?.value?.avg ?? null
-    );
-  };
+  // remove local extractor functions and use helpers
+  const skinTemp = getSkinTemperatureC(fitbitMetrics);
+  const breathingRate = getBreathingRate(fitbitMetrics);
+  const spo2 = getSpO2Percent(fitbitMetrics);
 
   const healthScore = (() => {
     if (!aggregatedData.steps && !aggregatedData.heartRate && !aggregatedData.sleep) {
@@ -165,10 +137,6 @@ const DashboardScreen = ({ navigation }) => {
 
     return factors > 0 ? Math.round(score / factors) : 75;
   })();
-
-  const skinTemp = getSkinTemperatureC();
-  const breathingRate = getBreathingRate();
-  const spo2 = getSpO2Percent();
 
   return (
     <View className="flex-1 bg-white">

@@ -187,3 +187,36 @@ export const isYesterday = (date) => {
   const checkDate = new Date(date);
   return yesterday.toDateString() === checkDate.toDateString();
 }; 
+
+// Fitbit metric extractors
+export const getSkinTemperatureC = (fitbitMetrics) => {
+	const st = fitbitMetrics?.skin_temperature;
+	return (
+		st?.tempSkin?.[0]?.value ||
+		st?.['tempSkin']?.[0]?.value ||
+		st?.value ||
+		st?.[0]?.value || null
+	);
+};
+
+export const getBreathingRate = (fitbitMetrics) => {
+	const br = fitbitMetrics?.breathing_rate;
+	return (
+		br?.br?.[0]?.value?.breathingRate ||
+		br?.['br']?.[0]?.value?.breathingRate ||
+		br?.value?.breathingRate ||
+		br?.value ||
+		br?.[0]?.value?.breathingRate || null
+	);
+};
+
+export const getSpO2Percent = (fitbitMetrics) => {
+	const spo2 = fitbitMetrics?.oxygen_saturation;
+	return (
+		spo2?.spo2?.[0]?.value?.avg ||
+		spo2?.['spo2']?.[0]?.value?.avg ||
+		spo2?.value?.avg ||
+		spo2?.value ||
+		spo2?.[0]?.value?.avg || null
+	);
+}; 
