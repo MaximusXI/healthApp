@@ -15,6 +15,7 @@ const DashboardScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [permissionsGranted, setPermissionsGranted] = useState(false);
   const [healthConnectAvailable, setHealthConnectAvailable] = useState(true);
+  const [fitbitMetrics, setFitbitMetrics] = useState(null);
 
   healthSync();
 
@@ -72,10 +73,11 @@ const DashboardScreen = ({ navigation }) => {
       console.log('The aggregated health data is:');
       console.log(aggregated);
 
-      //Fitbit Data
+      // Fitbit Data
       const metrics = await fetchFitbitData();
-      console.log('The data fetched fromr the fitbit is:');
+      console.log('The data fetched from the fitbit is:');
       console.log(metrics);
+      setFitbitMetrics(metrics);
       
       // Get AI recommendations
       const aiRecommendations = await aiService.sendHealthDataToBackend(data, aggregated);
@@ -97,7 +99,41 @@ const DashboardScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
-  const getHealthScore = () => {
+  // ---- Fitbit value extractors (safe, with fallbacks) ----
+  const getSkinTemperatureC = () => {
+    const st = fitbitMetrics?.skin_temperature;
+    // Try several likely shapes; default to null if not present
+    return (
+      st?.tempSkin?.[0]?.value ??
+      st?.['tempSkin']?.[0]?.value ??
+      st?.value ??
+      st?.[0]?.value ?? null
+    );
+  };
+
+  const getBreathingRate = () => {
+    const br = fitbitMetrics?.breathing_rate;
+    return (
+      br?.br?.[0]?.value?.breathingRate ??
+      br?.['br']?.[0]?.value?.breathingRate ??
+      br?.value?.breathingRate ??
+      br?.value ??
+      br?.[0]?.value?.breathingRate ?? null
+    );
+  };
+
+  const getSpO2Percent = () => {
+    const spo2 = fitbitMetrics?.oxygen_saturation;
+    return (
+      spo2?.spo2?.[0]?.value?.avg ??
+      spo2?.['spo2']?.[0]?.value?.avg ??
+      spo2?.value?.avg ??
+      spo2?.value ??
+      spo2?.[0]?.value?.avg ?? null
+    );
+  };
+
+  const healthScore = (() => {
     if (!aggregatedData.steps && !aggregatedData.heartRate && !aggregatedData.sleep) {
       return 75; // Default score for mock data
     }
@@ -105,43 +141,34 @@ const DashboardScreen = ({ navigation }) => {
     let score = 0;
     let factors = 0;
 
-    // Steps score (0-40 points)
     if (aggregatedData.steps) {
       const stepPercentage = Math.min((aggregatedData.steps.total / 10000) * 100, 100);
       score += (stepPercentage / 100) * 40;
       factors++;
     }
 
-    // Heart rate score (0-30 points)
     if (aggregatedData.heartRate) {
       const hr = aggregatedData.heartRate.average;
-      if (hr >= 60 && hr <= 100) {
-        score += 30;
-      } else if (hr >= 50 && hr <= 110) {
-        score += 20;
-      } else {
-        score += 10;
-      }
+      if (hr >= 60 && hr <= 100) score += 30;
+      else if (hr >= 50 && hr <= 110) score += 20;
+      else score += 10;
       factors++;
     }
 
-    // Sleep score (0-30 points)
     if (aggregatedData.sleep) {
       const sleepHours = aggregatedData.sleep.averageHours;
-      if (sleepHours >= 7 && sleepHours <= 9) {
-        score += 30;
-      } else if (sleepHours >= 6 && sleepHours <= 10) {
-        score += 20;
-      } else {
-        score += 10;
-      }
+      if (sleepHours >= 7 && sleepHours <= 9) score += 30;
+      else if (sleepHours >= 6 && sleepHours <= 10) score += 20;
+      else score += 10;
       factors++;
     }
 
     return factors > 0 ? Math.round(score / factors) : 75;
-  };
+  })();
 
-  const healthScore = getHealthScore();
+  const skinTemp = getSkinTemperatureC();
+  const breathingRate = getBreathingRate();
+  const spo2 = getSpO2Percent();
 
   return (
     <View className="flex-1 bg-white">
@@ -190,21 +217,23 @@ const DashboardScreen = ({ navigation }) => {
           />
         </View>
 
-        {/* Quick Stats */}
+        {/* Quick Stats (Fitbit) */}
         <View className="mb-4">
           <Text className="text-lg font-semibold text-black mb-3">Today's Stats</Text>
           <View className="flex-row flex-wrap justify-between">
+            {/* Skin Temperature */}
             <View className="w-[48%] mb-3">
               <HealthCard
-                title="Steps"
-                value={aggregatedData.steps?.total || 0}
-                unit="steps"
-                icon="👟"
+                title="Skin Temperature"
+                value={skinTemp ?? '--'}
+                unit={skinTemp != null ? '°C' : ''}
+                icon="🌡️"
                 color="gray"
-                subtitle="Daily goal: 10,000"
-                trend={aggregatedData.steps?.total > 8000 ? 'up' : 'down'}
+                subtitle="Latest skin temperature"
               />
             </View>
+
+            {/* Heart Rate (unchanged) */}
             <View className="w-[48%] mb-3">
               <HealthCard
                 title="Heart Rate"
@@ -215,24 +244,28 @@ const DashboardScreen = ({ navigation }) => {
                 subtitle={`Avg: ${aggregatedData.heartRate?.average || '--'} BPM`}
               />
             </View>
+
+            {/* Breathing Rate */}
             <View className="w-[48%] mb-3">
               <HealthCard
-                title="Calories"
-                value={aggregatedData.calories?.total || 0}
-                unit="kcal"
-                icon="🔥"
+                title="Breathing Rate"
+                value={breathingRate ?? '--'}
+                unit={breathingRate != null ? 'rpm' : ''}
+                icon="🫁"
                 color="gray"
-                subtitle="Total calories burned"
+                subtitle="Respirations per minute"
               />
             </View>
+
+            {/* SpO2 */}
             <View className="w-[48%] mb-3">
               <HealthCard
-                title="Sleep"
-                value={aggregatedData.sleep?.averageHours || '--'}
-                unit="hrs"
-                icon="😴"
+                title="SpO₂"
+                value={spo2 ?? '--'}
+                unit={spo2 != null ? '%' : ''}
+                icon="🩸"
                 color="gray"
-                subtitle={`${aggregatedData.sleep?.sessions || 0} sessions`}
+                subtitle="Oxygen saturation"
               />
             </View>
           </View>
