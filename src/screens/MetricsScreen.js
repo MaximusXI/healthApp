@@ -46,7 +46,7 @@ const MetricsScreen = () => {
 
   return (
     <View className="flex-1 bg-gray-100">
-      <View className="bg-green-600 px-5 pt-12 pb-6 shadow-lg">
+      <View className="bg-blue-600 px-5 pt-12 pb-6 shadow-lg">
         <Text className="text-2xl font-bold text-white mb-2">Health Metrics</Text>
         <Text className="text-green-100">Detailed health data and trends</Text>
       </View>
@@ -94,7 +94,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.steps?.total || 0}
                 unit="steps"
                 icon="👟"
-                color="green"
+                color="gray"
                 subtitle={`Avg: ${aggregatedData.steps?.average || 0}/day`}
                 trend={aggregatedData.steps?.total > 8000 ? 'up' : 'down'}
               />
@@ -105,7 +105,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.distance?.total || 0}
                 unit="meters"
                 icon="🚶"
-                color="blue"
+                color="gray"
                 subtitle={`Avg: ${aggregatedData.distance?.average || 0}m/day`}
               />
             </View>
@@ -115,7 +115,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.calories?.total || 0}
                 unit="kcal"
                 icon="🔥"
-                color="orange"
+                color="gray"
                 subtitle={`Avg: ${aggregatedData.calories?.average || 0} kcal/day`}
               />
             </View>
@@ -125,7 +125,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.activeTime?.total || 0}
                 unit="min"
                 icon="⏱️"
-                color="purple"
+                color="gray"
                 subtitle={`Avg: ${aggregatedData.activeTime?.average || 0} min/day`}
               />
             </View>
@@ -142,7 +142,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.heartRate?.latest || '--'}
                 unit="BPM"
                 icon="❤️"
-                color="red"
+                color="gray"
                 subtitle={`Avg: ${aggregatedData.heartRate?.average || '--'} BPM`}
               />
             </View>
@@ -152,7 +152,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.bloodPressure?.latest || '--'}
                 unit="mmHg"
                 icon="🩺"
-                color="pink"
+                color="gray"
                 subtitle={`Avg: ${aggregatedData.bloodPressure?.average || '--'}`}
               />
             </View>
@@ -172,7 +172,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.bmi?.latest || '--'}
                 unit=""
                 icon="📏"
-                color="teal"
+                color="gray"
                 subtitle={`Category: ${aggregatedData.bmi?.category || '--'}`}
               />
             </View>
@@ -189,7 +189,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.sleep?.averageHours || '--'}
                 unit="hrs"
                 icon="😴"
-                color="purple"
+                color="gray"
                 subtitle={`${aggregatedData.sleep?.sessions || 0} sessions`}
               />
             </View>
@@ -199,7 +199,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.sleep?.quality || '--'}
                 unit="%"
                 icon="🌙"
-                color="indigo"
+                color="gray"
                 subtitle="Deep sleep percentage"
               />
             </View>
@@ -211,7 +211,7 @@ const MetricsScreen = () => {
                 target={8}
                 title="Sleep Goal (8 hours)"
                 unit="hours"
-                color="purple"
+                color="gray"
               />
             </View>
           )}
@@ -227,7 +227,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.water?.average || 0}
                 unit="ml"
                 icon="💧"
-                color="blue"
+                color="gray"
                 subtitle={`Goal: ${aggregatedData.water?.goal || 2000}ml`}
               />
             </View>
@@ -237,7 +237,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.nutrition?.calories || 0}
                 unit="kcal"
                 icon="🍽️"
-                color="orange"
+                color="gray"
                 subtitle={`Goal: ${aggregatedData.nutrition?.calorieGoal || 2000} kcal`}
               />
             </View>
@@ -249,7 +249,7 @@ const MetricsScreen = () => {
                 target={aggregatedData.water.goal || 2000}
                 title="Daily Water Goal"
                 unit="ml"
-                color="blue"
+                color="gray"
               />
             </View>
           )}
@@ -265,7 +265,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.exercise?.sessions || 0}
                 unit=""
                 icon="🏃"
-                color="green"
+                color="gray"
                 subtitle={`${aggregatedData.exercise?.totalDuration || 0} min total`}
               />
             </View>
@@ -275,7 +275,7 @@ const MetricsScreen = () => {
                 value={aggregatedData.vo2Max?.latest || '--'}
                 unit="ml/kg/min"
                 icon="🫁"
-                color="cyan"
+                color="gray"
                 subtitle={`Fitness level: ${aggregatedData.vo2Max?.level || '--'}`}
               />
             </View>

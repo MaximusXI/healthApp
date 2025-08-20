@@ -200,7 +200,7 @@ const DashboardScreen = ({ navigation }) => {
                 value={aggregatedData.steps?.total || 0}
                 unit="steps"
                 icon="👟"
-                color="green"
+                color="gray"
                 subtitle="Daily goal: 10,000"
                 trend={aggregatedData.steps?.total > 8000 ? 'up' : 'down'}
               />
@@ -211,7 +211,7 @@ const DashboardScreen = ({ navigation }) => {
                 value={aggregatedData.heartRate?.latest || '--'}
                 unit="BPM"
                 icon="❤️"
-                color="red"
+                color="gray"
                 subtitle={`Avg: ${aggregatedData.heartRate?.average || '--'} BPM`}
               />
             </View>
@@ -221,7 +221,7 @@ const DashboardScreen = ({ navigation }) => {
                 value={aggregatedData.calories?.total || 0}
                 unit="kcal"
                 icon="🔥"
-                color="orange"
+                color="gray"
                 subtitle="Total calories burned"
               />
             </View>
@@ -231,7 +231,7 @@ const DashboardScreen = ({ navigation }) => {
                 value={aggregatedData.sleep?.averageHours || '--'}
                 unit="hrs"
                 icon="😴"
-                color="purple"
+                color="gray"
                 subtitle={`${aggregatedData.sleep?.sessions || 0} sessions`}
               />
             </View>

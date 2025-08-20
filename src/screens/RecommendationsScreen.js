@@ -107,7 +107,7 @@ const RecommendationsScreen = () => {
 
   return (
     <View className="flex-1 bg-gray-100">
-      <View className="bg-purple-600 px-5 pt-12 pb-6 shadow-lg">
+      <View className="bg-blue-600 px-5 pt-12 pb-6 shadow-lg">
         <Text className="text-2xl font-bold text-white mb-2">AI Recommendations</Text>
         <Text className="text-purple-100">Personalized health insights and advice</Text>
       </View>

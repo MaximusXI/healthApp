@@ -90,7 +90,7 @@ const ProfileScreen = () => {
 
   return (
     <View className="flex-1 bg-gray-100">
-      <View className="bg-indigo-600 px-5 pt-12 pb-6 shadow-lg">
+      <View className="bg-blue-600 px-5 pt-12 pb-6 shadow-lg">
         <Text className="text-2xl font-bold text-white mb-2">Profile & Settings</Text>
         <Text className="text-indigo-100">Manage your account and preferences</Text>
       </View>
@@ -312,7 +312,7 @@ const ProfileScreen = () => {
 
       <TouchableOpacity
         onPress={logout}
-        className="bg-red-500 rounded-lg py-3 px-8 items-center m-6">
+        className="bg-black rounded-lg py-3 px-8 items-center m-6">
       <Text className="text-white font-bold text-base">Logout</Text>
       </TouchableOpacity>
     </View>
