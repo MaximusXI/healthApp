@@ -10,6 +10,7 @@ import RecommendationsScreen from '../screens/RecommendationsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
+import PasswordResetScreen from '../screens/PasswordResetScreen';
 import FitbitScreen from '../screens/FitbitScreen';
 import { AuthContext } from '../services/AuthContext';
 
@@ -55,6 +56,7 @@ const SignOutStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Signup" component={SignupScreen} />
+    <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
   </Stack.Navigator>
 );
 

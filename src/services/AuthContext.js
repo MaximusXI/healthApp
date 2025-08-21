@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect,useMemo } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 
 // Firebase config - you'll need to replace this with your actual config
 const firebaseConfig = {
@@ -18,6 +18,7 @@ export const AuthContext = createContext({
   login: async () => {},
   signup: async () => {},
   logout: async () => {},
+  resetPassword: async () => {},
   fitbitConnected: false,
   setFitbitConnected: () => {},
 });
@@ -60,6 +61,10 @@ export const AuthProvider = ({ children }) => {
     throw new Error('No user is currently signed in');
   };
 
+  const resetPassword = async (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+
   const value = useMemo(() => ({
     user,
     loading,
@@ -68,6 +73,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     createUserWithEmailAndPassword: registerWithEmail,
     updateUserProfile,
+    resetPassword,
     fitbitConnected,
     setFitbitConnected,
   }), [user, loading, fitbitConnected]);

@@ -96,6 +96,16 @@ const LoginScreen = () => {
               Sign Up now
             </Text>
           </Text>
+
+          {/* Forgot Password Navigation */}
+          <Text className="text-center text-gray-500 mt-2">
+            <Text
+              className="text-blue-600 font-bold"
+              onPress={() => navigation.navigate('PasswordReset')}
+            >
+              Forgot Password?
+            </Text>
+          </Text>
         </View>
       </View>
     </SafeAreaView>
