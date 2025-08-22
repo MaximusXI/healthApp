@@ -192,8 +192,8 @@ export const isYesterday = (date) => {
 export const getSkinTemperatureC = (fitbitMetrics) => {
 	const st = fitbitMetrics?.skin_temperature;
 	return (
-		st?.tempSkin?.[0]?.value ||
-		st?.['tempSkin']?.[0]?.value ||
+		st?.tempSkin?.[0]?.value.nightlyRelative ||
+		st?.['tempSkin']?.[0]?.value.nightlyRelative ||
 		st?.value ||
 		st?.[0]?.value || null
 	);
