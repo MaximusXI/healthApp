@@ -2,6 +2,8 @@ import { AppState } from 'react-native';
 import { useEffect, useRef, useState, useContext } from 'react';
 import healthService from '../services/healthService';
 import { AuthContext } from '../services/AuthContext';
+import { fetchFitbitData } from '../utils/fitbitUtil';
+import { getSkinTemperatureC, getBreathingRate, getSpO2Percent } from '../utils/helpers';
 
 const healthSync = () => {
   const [appState, setAppState] = useState(AppState.currentState);
@@ -18,26 +20,60 @@ const healthSync = () => {
       const now = new Date();
       const past24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
+      // Fetch health data from Health Connect
       const healthData = await healthService.fetchHealthData('24h');
+      
+      // Fetch Fitbit data
+      let fitbitData = null;
+      let skinTemperature = null;
+      let breathingRate = null;
+      let oxygenSaturation = null;
+      
+      try {
+        fitbitData = await fetchFitbitData();
+        
+        // Extract specific metrics using helper functions
+        skinTemperature = getSkinTemperatureC(fitbitData);
+        breathingRate = getBreathingRate(fitbitData);
+        oxygenSaturation = getSpO2Percent(fitbitData);
+        
+        console.log('📊 Fitbit data fetched:', {
+          skinTemperature,
+          breathingRate,
+          oxygenSaturation,
+          hasFitbitData: !!fitbitData
+        });
+      } catch (fitbitError) {
+        console.warn('⚠️ Failed to fetch Fitbit data:', fitbitError.message);
+        // Continue with health data only if Fitbit fails
+      }
+
       const token = await user.getIdToken();
 
+      // Prepare the data payload
+      const payload = {
+        userId: user.uid,
+        email: user.email,
+        data: healthData,
+        fitbitMetrics: {
+          skinTemperature: skinTemperature ? parseFloat(skinTemperature).toFixed(1) : null,
+          breathingRate: breathingRate ? parseFloat(breathingRate).toFixed(1) : null,
+          oxygenSaturation: oxygenSaturation ? parseFloat(oxygenSaturation).toFixed(1) : null,
+        }
+      };
+
       console.log('📦 Health data to send:', healthData);
-      console.log('Data in String');
-    //   console.log(JSON.stringify(healthData));
+      console.log('🌡️ Fitbit metrics to send:', payload.fitbitMetrics);
       console.log('👤 User:', user.email, user.uid);
       console.log('🔐 Token:', token.slice(0, 50) + '...'); // print part of token for debug
 
-      const response = await fetch('http://YOUR_IP:5000/api/health/sync', {
+      const response = await fetch('https://persuasive.research.cs.dal.ca/healthbridgeapp/api/health/sync', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          userId: user.uid,
-          email: user.email,
-          data: healthData,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const resData = await response.json();
@@ -46,6 +82,11 @@ const healthSync = () => {
         console.error('❌ Sync failed:', resData.message || 'Unknown error');
       } else {
         console.log('✅ Health data synced successfully');
+        if (fitbitData) {
+          console.log('✅ Fitbit data included in sync');
+        } else {
+          console.log('ℹ️ No Fitbit data included in sync');
+        }
       }
 
     } catch (err) {
@@ -59,7 +100,7 @@ const healthSync = () => {
     const handleAppStateChange = (nextAppState) => {
       if (nextAppState === 'active') {
         fetchAndSendHealthData();
-        intervalRef.current = setInterval(fetchAndSendHealthData, 10000);
+        intervalRef.current = setInterval(fetchAndSendHealthData, 60000);
       } else {
         clearInterval(intervalRef.current);
       }
